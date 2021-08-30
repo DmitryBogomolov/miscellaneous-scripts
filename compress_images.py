@@ -12,13 +12,17 @@ def compress_image(file_path, quality, is_inplace=False, out_dir=None):
     src_file = path.abspath(file_path)
     if not path.isfile(src_file):
         raise RuntimeError('"{0}" does not exist'.format(src_file))
-    tmp_file = get_working_name(src_file)
-    proc = subprocess.run(['convert', '-quality', str(quality) + '%', src_file, tmp_file])
-    if proc.returncode != 0:
-        if path.isfile(tmp_file):
-            os.remove(tmp_file)
-        raise RuntimeError('failed to compress "{0}"'.format(src_file))
-    shutil.copystat(src_file, tmp_file)
+    interim_file = get_interim_file_path(src_file)
+
+    try:
+        subprocess.run(
+            ['convert', '-quality', str(quality) + '%', src_file, interim_file],
+            capture_output=True, text=True, check=True
+        )
+        shutil.copystat(src_file, interim_file)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError('failed to compress "{0}": {1}'.format(src_file. str(e)))
+
     dst_file = ''
     if is_inplace:
         dst_file = src_file
@@ -26,10 +30,23 @@ def compress_image(file_path, quality, is_inplace=False, out_dir=None):
         dst_file = prepare_dst_dir(path.abspath(out_dir), src_file)
     else:
         dst_file = prepare_dst_dir(path.join(path.dirname(src_file), SUFFIX), src_file)
-    print('TEST', tmp_file, dst_file)
-    os.rename(tmp_file, dst_file)
 
-def get_working_name(file_path):
+    print('TEST', interim_file, dst_file)
+    os.rename(interim_file, dst_file)
+
+def get_image_data(file_path):
+    try:
+        proc = subprocess.run(
+            ['identify', '-format', r'%B %w %h %Q', file_path],
+            capture_output=True, text=True, check=True
+        )
+        size_str, w_str, h_str, quality_str = proc.stdout.split()
+        return [int(size_str), int(w_str), int(h_str), int(quality_str)]
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(str(e))
+
+
+def get_interim_file_path(file_path):
     name, ext = path.splitext(path.basename(file_path))
     return path.join(path.dirname(file_path), name + SUFFIX + ext)
 
