@@ -25,6 +25,8 @@ def compress_image(file_path, quality, max_size, is_inplace, out_dir):
         raise RuntimeError('"{0}" does not exist'.format(src_file))
     src_info = ImageInfo(src_file)
 
+    # Interim file is used to preserve original file (for inplace case) so that
+    # its stats could be then copied.
     interim_file = get_interim_file_path(src_file)
     args = ['convert']
     if max_size is not None:
@@ -61,7 +63,7 @@ def get_image_size(file_path):
         encoding='utf8', check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     w, h = map(int, proc.stdout.split())
-    return [w, h]
+    return (w, h)
 
 def get_interim_file_path(file_path):
     name, ext = path.splitext(path.basename(file_path))
@@ -81,8 +83,8 @@ def main():
     def check_quality_arg(val):
         try:
             quality = int(val)
-            if quality < 10 or quality > 99:
-                raise ValueError('value is out of range')
+            if quality < 10 or quality > 100:
+                raise ValueError('value is out of range [10, 100]')
             return quality
         except Exception as e:
             raise argparse.ArgumentTypeError(e)
@@ -91,18 +93,35 @@ def main():
         try:
             max_size = int(val)
             if max_size < 400 or max_size > 8000:
-                raise ValueError('value is out of range')
+                raise ValueError('value is out of range [400, 8000]')
             return max_size
         except Exception as e:
             raise argparse.ArgumentTypeError(e)
 
     parser = argparse.ArgumentParser(description='Compresses images')
-    parser.add_argument('targets', type=str, nargs='+')
-    parser.add_argument('--quality', dest='quality', type=check_quality_arg)
-    parser.add_argument('--max-size', dest='max_size', type=check_max_size_arg)
-    parser.add_argument('--inplace', dest='is_inplace', action='store_true', default=False)
-    parser.add_argument('--out-dir', dest='out_dir', type=str)
+    parser.add_argument('targets', type=str, nargs='+', help='files to process')
+    parser.add_argument(
+        '--quality',
+        dest='quality', type=check_quality_arg,
+        help='compression quality / [10, 100]'
+    )
+    parser.add_argument(
+        '--max-size',
+        dest='max_size', type=check_max_size_arg,
+        help='max width/height (which is greater) / [400, 8000]'
+    )
+    parser.add_argument(
+        '--inplace',
+        dest='is_inplace', action='store_true', default=False,
+        help='replace file'
+    )
+    parser.add_argument(
+        '--out-dir',
+        dest='out_dir', type=str,
+        help='output directory'
+    )
     args = parser.parse_args(sys.argv[1:])
+
     for target in args.targets:
         try:
             src, dst = compress_image(
