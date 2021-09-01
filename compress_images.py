@@ -29,6 +29,9 @@ def compress_image(file_path, quality, max_size, is_inplace, out_dir):
     # Interim file is used to preserve original file (for inplace case) so that
     # its stats could then be copied.
     interim_file = get_interim_file_path(src_file)
+    # There is an issue with `convert`.
+    # Since 6.9.10-23 (approximately) version `-quality` outputs significantly larger (~6x) file.
+    # This version is used in "focal" (u20) repositories.
     args = ['convert']
     if max_size is not None:
         args.extend(['-resize', get_resize_param(src_info.image_size, max_size)])
