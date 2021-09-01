@@ -7,26 +7,27 @@ import shutil
 
 SUFFIX = '.CMPRSIMG'
 
-class ImageInfo(object):
+class ImageInfo:
     def __init__(self, file_path):
         self.file_path = file_path
         self.file_size = path.getsize(file_path)
         w, h = get_image_size(file_path)
-        self.image_size = [w, h]
+        self.image_size = (w, h)
 
     def __str__(self):
         return '{} ({}K, {}x{})'.format(
-            self.file_path, round(self.file_size / 1024), self.image_size[0], self.image_size[1]
+            self.file_path, round(self.file_size / 1024),
+            self.image_size[0], self.image_size[1]
         )
 
 def compress_image(file_path, quality, max_size, is_inplace, out_dir):
     src_file = path.abspath(file_path)
     if not path.isfile(src_file):
-        raise RuntimeError('"{0}" does not exist'.format(src_file))
+        raise RuntimeError('"{}" does not exist'.format(src_file))
     src_info = ImageInfo(src_file)
 
     # Interim file is used to preserve original file (for inplace case) so that
-    # its stats could be then copied.
+    # its stats could then be copied.
     interim_file = get_interim_file_path(src_file)
     args = ['convert']
     if max_size is not None:
@@ -72,7 +73,11 @@ def get_interim_file_path(file_path):
 def prepare_dst_file(file_path, is_inplace, out_dir):
     if is_inplace:
         return file_path
-    dir_path = path.abspath(out_dir) if out_dir else path.join(path.dirname(file_path), SUFFIX)
+    dir_path = ''
+    if out_dir:
+        dir_path = path.abspath(out_dir)
+    else:
+        dir_path = path.join(path.dirname(file_path), SUFFIX)
     os.makedirs(dir_path, exist_ok=True)
     return path.join(dir_path, path.basename(file_path))
 
@@ -98,7 +103,7 @@ def main():
         except Exception as e:
             raise argparse.ArgumentTypeError(e)
 
-    parser = argparse.ArgumentParser(description='Compresses images')
+    parser = argparse.ArgumentParser(description='Compresses JPEG files')
     parser.add_argument('targets', type=str, nargs='+', help='files to process')
     parser.add_argument(
         '--quality',
