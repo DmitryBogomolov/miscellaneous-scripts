@@ -46,7 +46,8 @@ def compress_image(file_path, quality, max_size, is_inplace, out_dir):
     shutil.copystat(src_file, interim_file)
 
     dst_file = prepare_dst_file(src_file, is_inplace, out_dir)
-    os.rename(interim_file, dst_file)
+    # Using os.rename causes "Invalid cross-device link" error in docker.
+    shutil.move(interim_file, dst_file)
     dst_info = ImageInfo(dst_file)
     return src_info, dst_info
 
