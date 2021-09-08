@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$#" -ne 2 ]]; then
+    echo "zip_dir /path/to/dir /path/to/archive.zip"
+    exit 2
+fi
+
 src_dir="$1"
 dst_dir=$(dirname "$2")
 file_name=$(basename "$2")

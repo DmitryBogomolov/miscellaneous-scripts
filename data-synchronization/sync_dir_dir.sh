@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$#" -ne 2 ]]; then
+    echo "sync_dir_dir /path/to/src /path/to/dst"
+    exit 2
+fi
+
 src_dir="$1"
 dst_dir="$2"
 
