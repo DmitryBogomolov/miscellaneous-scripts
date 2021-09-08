@@ -12,3 +12,4 @@ install() {
 }
 
 install sync_dir_dir.sh
+install zip_dir.sh
