@@ -11,4 +11,4 @@ install() {
     chmod +x "$dst_path"
 }
 
-install sync_folders.sh
+install sync_dir_dir.sh

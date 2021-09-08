@@ -10,10 +10,6 @@ check_dir() {
     fi
 }
 
-if [[ "$#" < 2 ]]; then
-    echo "Usage: <src_dir> <dst_dir>"
-    exit 1
-fi
 check_dir "$src_dir"
 check_dir "$dst_dir"
 
