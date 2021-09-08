@@ -14,3 +14,4 @@ install() {
 install sync_dir_dir.sh
 install zip_dir.sh
 install backup_disk_cloud.sh
+install backup_disk_disk.sh
