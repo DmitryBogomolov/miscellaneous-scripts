@@ -21,7 +21,9 @@ fi
 
 dirs=()
 while read item; do
-    dirs=("${dirs[@]}" "$item")
+    if [[ ! -z "$item" ]]; then
+        dirs=("${dirs[@]}" "$item")
+    fi
 done < "$list_file"
 
 do_sync () {
