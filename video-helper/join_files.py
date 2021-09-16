@@ -29,7 +29,7 @@ def main():
     import sys
     import argparse
 
-    parser = argparse.ArgumentParser(description='Joins mp4 files')
+    parser = argparse.ArgumentParser(description='Joins files')
     parser.add_argument('file_names', type=str, nargs='+', help='files to join')
     parser.add_argument('--out-file', type=str, required=True, dest='out_file', help='joined file')
     args = parser.parse_args(sys.argv[1:])
