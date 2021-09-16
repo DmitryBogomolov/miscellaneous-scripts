@@ -4,7 +4,7 @@ from os import path
 import shutil
 import subprocess
 
-def convert2mp4(file_name, make_safe_name=False):
+def to_mp4(file_name, make_safe_name=False):
     src_file = path.abspath(file_name)
     if not path.isfile(src_file):
         raise RuntimeError('file "{}" does not exist'.format(src_file))
@@ -52,7 +52,7 @@ def main():
     parser.add_argument('--safe-name', dest='make_safe_name', action='store_true', default=False)
     args = parser.parse_args(sys.argv[1:])
 
-    convert2mp4(args.file_name, args.make_safe_name)
+    to_mp4(args.file_name, args.make_safe_name)
 
 if __name__ == '__main__':
     main()
