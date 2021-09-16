@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 
+from join_files import join_files
+from to_mp4 import to_mp4
+import multiprocessing
+
 def convert_and_join(file_names, out_file):
-    pass
+    with multiprocessing.Pool(len(file_names)) as pool:
+        mp4_file_names = pool.map(to_mp4, file_names)
+    join_files(mp4_file_names, out_file)
 
 def main():
     import sys
