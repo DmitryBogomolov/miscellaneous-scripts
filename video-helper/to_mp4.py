@@ -47,9 +47,15 @@ def main():
     import sys
     import argparse
 
-    parser = argparse.ArgumentParser(description='Converts to mp4')
-    parser.add_argument('file_name', type=str)
-    parser.add_argument('--safe-name', dest='make_safe_name', action='store_true', default=False)
+    parser = argparse.ArgumentParser(description='Converts file to mp4')
+    parser.add_argument(
+        'file_name', type=str,
+        help='file to convert'
+    )
+    parser.add_argument(
+        '--safe-name', dest='make_safe_name', action='store_true', default=False,
+        help='replace spaces in file name'
+    )
     args = parser.parse_args(sys.argv[1:])
 
     to_mp4(args.file_name, args.make_safe_name)
