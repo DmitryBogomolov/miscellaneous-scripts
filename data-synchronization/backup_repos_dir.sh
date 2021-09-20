@@ -17,11 +17,11 @@ backup_repo() {
     cd "$repo_dir"
     remote_url="$(git config remote.origin.url)"
     echo "### '$remote_url' --> '$repo_dir'"
+    options=(--prune --verbose --force --ff-only --stat)
     if [[ ! -z "$SYNC_DRY_RUN" ]]; then
-        git fetch -P -v --dry-run
-    else
-        git pull -P -v
+        options=(${options[@]} --dry-run)
     fi
+    git pull "${options[@]}"
     echo ""
 }
 
