@@ -35,6 +35,7 @@ def call_ffmpeg(src_path, dst_path):
         'ffmpeg',
         '-i', src_path,
         '-c:v', 'libx264',
+        #'-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2',
         '-crf', '23',
         '-c:a', 'aac',
         '-strict',
