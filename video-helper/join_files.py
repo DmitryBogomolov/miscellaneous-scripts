@@ -23,7 +23,12 @@ def join_files(file_names, out_file):
 
 def call_ffmpeg(list_file_path, out_file_path):
     args = ['ffmpeg', '-f', 'concat', '-safe', '0', '-i', list_file_path, '-c', 'copy', out_file_path]
-    subprocess.run(args, encoding='utf8', check=True)
+    try:
+        subprocess.run(args, encoding='utf8', check=True)
+    except:
+        if path.isfile(out_file_path):
+            os.remove(out_file_path)
+        raise
 
 def main():
     import sys

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 from os import path
 import shutil
 import subprocess
@@ -34,6 +35,7 @@ def call_ffmpeg(src_path, dst_path):
         'ffmpeg',
         '-i', src_path,
         '-c:v', 'libx264',
+        #'-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2',
         '-crf', '23',
         '-c:a', 'aac',
         '-strict',
@@ -41,7 +43,12 @@ def call_ffmpeg(src_path, dst_path):
         '-q:a', '100',
         dst_path
     ]
-    subprocess.run(args, encoding='utf8', check=True)
+    try:
+        subprocess.run(args, encoding='utf8', check=True)
+    except:
+        if path.isfile(dst_path):
+            os.remove(dst_path)
+        raise
 
 def main():
     import sys
