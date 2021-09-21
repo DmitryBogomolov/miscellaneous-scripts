@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 from os import path
 import shutil
 import subprocess
@@ -41,7 +42,12 @@ def call_ffmpeg(src_path, dst_path):
         '-q:a', '100',
         dst_path
     ]
-    subprocess.run(args, encoding='utf8', check=True)
+    try:
+        subprocess.run(args, encoding='utf8', check=True)
+    except:
+        if path.isfile(dst_path):
+            os.remove(dst_path)
+        raise
 
 def main():
     import sys
