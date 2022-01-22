@@ -22,5 +22,4 @@ Backup to disks.
 ```bash
 backup_disk_disk misc_disk misc_backup_disk
 backup_disk_disk media_disk media_backup_disk
-backup_disk_disk media_backup_disk misc_backup_disk
 ```
