@@ -20,13 +20,7 @@ def backup_disk_disk(src_disk, dst_disk, dry_run):
 
     util.check_dir_exist(src_path)
     util.check_dir_exist(dst_path)
-
-    list_file_path = path.join(src_path, '.backup_disk_disk')
-    if not path.isfile(list_file_path):
-        raise RuntimeError('"{}" does not exist'.format(list_file_path))
-
-    with open(list_file_path, 'r', encoding='utf8') as file_buffer:
-        target_dirs = [line.strip() for line in file_buffer.readlines()]
+    target_dirs = util.read_list_file(path.join(src_path, '.backup_disk_disk'))
 
     begin_time = time.time()
     for target_dir in target_dirs:
@@ -37,10 +31,10 @@ def backup_disk_disk(src_disk, dst_disk, dry_run):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Synchronizes disks.'
+        description='Synchronizes disk to disk.'
     )
-    parser.add_argument('src_disk', help='source disk')
-    parser.add_argument('dst_disk', help='target disk')
+    parser.add_argument('src_disk', help='source disk name')
+    parser.add_argument('dst_disk', help='target disk name')
     parser.add_argument('--dry-run', action='store_true', help='do dry run')
     args = parser.parse_args(sys.argv[1:])
 

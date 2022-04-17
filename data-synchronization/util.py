@@ -14,3 +14,10 @@ def get_disk_path(disk_name):
 
 def is_dry_run(dry_run):
     return dry_run or os.getenv('SYNC_DRY_RUN')
+
+def read_list_file(file_path):
+    if not path.isfile(file_path):
+        raise RuntimeError('"{}" file does not exist'.format(file_path))
+
+    with open(file_path, 'r', encoding='utf8') as file_buffer:
+        return [line.strip() for line in file_buffer.readlines()]
