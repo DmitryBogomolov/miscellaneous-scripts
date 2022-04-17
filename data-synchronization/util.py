@@ -7,7 +7,11 @@ import time
 
 def check_dir_exist(dir_path):
     if not path.isdir(dir_path):
-        raise RuntimeError('"{}" does not exist'.format(dir_path))
+        raise RuntimeError('"{}" directory does not exist'.format(dir_path))
+
+def check_file_exist(file_path):
+    if not path.isfile(file_path):
+        raise RuntimeError('"{}" file does not exist'.format(file_path))
 
 def call_proc(proc_args, capture_output=False, cwd=None):
     return subprocess.run(
@@ -22,9 +26,7 @@ def is_dry_run(dry_run):
     return dry_run or os.getenv('SYNC_DRY_RUN')
 
 def read_list_file(file_path):
-    if not path.isfile(file_path):
-        raise RuntimeError('"{}" file does not exist'.format(file_path))
-
+    check_file_exist(file_path)
     with open(file_path, 'r', encoding='utf8') as file_buffer:
         return [line.strip() for line in file_buffer.readlines()]
 
