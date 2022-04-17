@@ -2,7 +2,7 @@
 
 import sys
 import argparse
-from os import path
+import os.path as path
 import shutil
 
 def zip_directory(dir_path, archive_path):
@@ -34,7 +34,7 @@ def main():
     elif path.isfile(target) and path.splitext(target)[1] == '.zip':
         unzip_archive(target, output)
     else:
-        raise ValueError('{} is neigher directory nor zip file'.format(target))
+        raise RuntimeError('{} is neigher directory nor zip file'.format(target))
 
 if __name__ == '__main__':
     main()
