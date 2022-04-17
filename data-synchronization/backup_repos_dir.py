@@ -2,7 +2,6 @@
 
 import os.path as path
 import os
-import time
 import util
 
 def backup_repo(repo_path, is_dry_run):
@@ -27,12 +26,8 @@ def backup_repos_dir(repos_path, dry_run):
         if path.isdir(path.join(repo_dir, '.git')):
             repo_dirs.append(repo_dir)
 
-    begin_time = time.time()
     for repo_dir in repo_dirs:
         backup_repo(repo_dir, is_dry_run)
-    end_time = time.time()
-    duration = int(end_time - begin_time)
-    print('time: {}s'.format(duration))
 
 def main():
     def setup_args(parser):
@@ -43,7 +38,7 @@ def main():
         add_dry_run=True
     )
 
-    backup_repos_dir(args.repos_dir, args.dry_run)
+    util.measure_time(lambda: backup_repos_dir(args.repos_dir, args.dry_run))
 
 if __name__ == '__main__':
     main()

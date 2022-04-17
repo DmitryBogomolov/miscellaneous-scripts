@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os.path as path
-import time
 import util
 
 def backup_dir(dir_path, bucket_path, dir_name, is_dry_run, tool_name):
@@ -24,12 +23,8 @@ def backup_disk_cloud(disk, bucket, dry_run, tool_name):
     util.check_dir_exist(disk_path)
     target_dirs = util.read_list_file(path.join(disk_path, '.backup_disk_cloud'))
 
-    begin_time = time.time()
     for dir_name in target_dirs:
         backup_dir(disk_path, bucket_path, dir_name, is_dry_run, tool_name)
-    end_time = time.time()
-    duration = int(end_time - begin_time)
-    print('time: {}s'.format(duration))
 
 def main():
     def setup_args(parser):
@@ -42,7 +37,7 @@ def main():
         add_dry_run=True
     )
 
-    backup_disk_cloud(args.disk, args.bucket, args.dry_run, args.tool)
+    util.measure_time(lambda: backup_disk_cloud(args.disk, args.bucket, args.dry_run, args.tool))
 
 if __name__ == '__main__':
     main()

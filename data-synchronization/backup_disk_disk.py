@@ -20,12 +20,8 @@ def backup_disk_disk(src_disk, dst_disk, dry_run):
     util.check_dir_exist(dst_path)
     target_dirs = util.read_list_file(path.join(src_path, '.backup_disk_disk'))
 
-    begin_time = time.time()
     for target_dir in target_dirs:
         sync_dirs(src_path, dst_path, target_dir, dry_run)
-    end_time = time.time()
-    duration = int(end_time - begin_time)
-    print('time: {}s'.format(duration))
 
 def main():
     def setup_args(parser):
@@ -37,7 +33,7 @@ def main():
         add_dry_run=True
     )
 
-    backup_disk_disk(args.src_disk, args.dst_disk, args.dry_run)
+    util.measure_time(lambda: backup_disk_disk(args.src_disk, args.dst_disk, args.dry_run))
 
 if __name__ == '__main__':
     main()
