@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
-import argparse
 import os.path as path
 import time
 import util
@@ -30,13 +28,14 @@ def backup_disk_disk(src_disk, dst_disk, dry_run):
     print('time: {}s'.format(duration))
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Synchronizes disk to disk.'
+    def setup_args(parser):
+        parser.add_argument('src_disk', help='source disk name')
+        parser.add_argument('dst_disk', help='target disk name')
+    args = util.parse_cmd_args(
+        'Synchronizes disk to disk.',
+        setup_args,
+        add_dry_run=True
     )
-    parser.add_argument('src_disk', help='source disk name')
-    parser.add_argument('dst_disk', help='target disk name')
-    parser.add_argument('--dry-run', action='store_true', help='do dry run')
-    args = parser.parse_args(sys.argv[1:])
 
     backup_disk_disk(args.src_disk, args.dst_disk, args.dry_run)
 

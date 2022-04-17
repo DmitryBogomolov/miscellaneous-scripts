@@ -1,3 +1,5 @@
+import sys
+import argparse
 import os
 import os.path as path
 import subprocess
@@ -21,3 +23,10 @@ def read_list_file(file_path):
 
     with open(file_path, 'r', encoding='utf8') as file_buffer:
         return [line.strip() for line in file_buffer.readlines()]
+
+def parse_cmd_args(description, setup_args, add_dry_run=False):
+    parser = argparse.ArgumentParser(description=description)
+    setup_args(parser)
+    if add_dry_run:
+        parser.add_argument('--dry-run', action='store_true', help='do dry run')
+    return parser.parse_args(sys.argv[1:])

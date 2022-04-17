@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
-import argparse
 import os.path as path
 import time
 import util
@@ -34,14 +32,15 @@ def backup_disk_cloud(disk, bucket, dry_run, tool_name):
     print('time: {}s'.format(duration))
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Synchronizes disk to s3 bucket.'
+    def setup_args(parser):
+        parser.add_argument('disk', help='source disk name')
+        parser.add_argument('bucket', help='target bucket name')
+        parser.add_argument('--tool', default='aws', help='s3 tool to use')
+    args = util.parse_cmd_args(
+        'Synchronizes disk to s3 bucket.',
+        setup_args,
+        add_dry_run=True
     )
-    parser.add_argument('disk', help='source disk name')
-    parser.add_argument('bucket', help='target bucket name')
-    parser.add_argument('--tool', default='aws', help='s3 tool to use')
-    parser.add_argument('--dry-run', action='store_true', help='do dry run')
-    args = parser.parse_args(sys.argv[1:])
 
     backup_disk_cloud(args.disk, args.bucket, args.dry_run, args.tool)
 

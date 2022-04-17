@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-from pickletools import uint1
-import sys
-import argparse
-import os
 import os.path as path
 import util
 
@@ -23,13 +19,14 @@ def sync_dir_dir(src_path, dst_path, dry_run):
     util.call_proc(proc_args)
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Synchronizes directories with rsync util.'
+    def setup_args(parser):
+        parser.add_argument('src_dir', help='source directory')
+        parser.add_argument('dst_dir', help='target directory')
+    args = util.parse_cmd_args(
+        'Synchronizes directories with rsync util.',
+        setup_args,
+        add_dry_run=True
     )
-    parser.add_argument('src_dir', help='source directory')
-    parser.add_argument('dst_dir', help='target directory')
-    parser.add_argument('--dry-run', action='store_true', help='do dry run')
-    args = parser.parse_args(sys.argv[1:])
 
     sync_dir_dir(args.src_dir, args.dst_dir, args.dry_run)
 

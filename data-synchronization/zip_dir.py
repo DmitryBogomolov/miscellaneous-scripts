@@ -1,9 +1,8 @@
 #!/usb/bin/env python3
 
-import sys
-import argparse
 import os.path as path
 import shutil
+import util
 
 def zip_directory(dir_path, archive_path):
     archive_format = 'zip'
@@ -30,12 +29,13 @@ def zip_dir(target_path, output_path):
         raise RuntimeError('"{}" is neigher directory nor archive file'.format(target))
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Packs directory into archive or unpacks archive into directory.'
+    def setup_args(parser):
+        parser.add_argument('target', help='path to directory or archive')
+        parser.add_argument('--output', help='path to archive or directory')
+    args = util.parse_cmd_args(
+        'Packs directory into archive or unpacks archive into directory.',
+        setup_args
     )
-    parser.add_argument('target', help='path to directory or archive')
-    parser.add_argument('--output', help='path to archive or directory')
-    args = parser.parse_args(sys.argv[1:])
 
     zip_dir(args.target, args.output)
 

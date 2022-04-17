@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
-import argparse
 import os.path as path
 import os
 import time
@@ -37,12 +35,13 @@ def backup_repos_dir(repos_path, dry_run):
     print('time: {}s'.format(duration))
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Synchronizes repositories.'
+    def setup_args(parser):
+        parser.add_argument('repos_dir', help='repositories directory')
+    args = util.parse_cmd_args(
+        'Synchronizes repositories.',
+        setup_args,
+        add_dry_run=True
     )
-    parser.add_argument('repos_dir', help='repositories directory')
-    parser.add_argument('--dry-run', action='store_true', help='do dry run')
-    args = parser.parse_args(sys.argv[1:])
 
     backup_repos_dir(args.repos_dir, args.dry_run)
 
