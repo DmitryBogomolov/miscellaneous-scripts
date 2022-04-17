@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 
+from pickletools import uint1
 import sys
 import argparse
 import os
 import os.path as path
-import subprocess
+import util
 
-def check_dir(dir_path):
-    if not path.isdir(dir_path):
-        raise RuntimeError('{} is not a directory'.format(dir_path))
+def sync_dir_dir(src_path, dst_path, dry_run):
+    src_dir = path.abspath(src_path) + '/'
+    dst_dir = path.abspath(dst_path) + '/'
+    dry_run = dry_run or os.getenv('SYNC_DRY_RUN')
+
+    util.check_dir_exist(src_dir)
+    util.check_dir_exist(dst_dir)
+    proc_args = ['rsync', '--archive', '--delete', '--compress', '--progress', '-v', '-h']
+    if dry_run:
+        proc_args.append('--dry-run')
+    proc_args.append(src_dir)
+    proc_args.append(dst_dir)
+
+    util.call_proc(proc_args)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -19,19 +31,7 @@ def main():
     parser.add_argument('--dry-run', action='store_true', help='do dry run')
     args = parser.parse_args(sys.argv[1:])
 
-    src_dir = path.abspath(args.src_dir) + '/'
-    dst_dir = path.abspath(args.dst_dir) + '/'
-    dry_run = args.dry_run or os.getenv('SYNC_DRY_RUN')
-
-    check_dir(src_dir)
-    check_dir(dst_dir)
-    proc_args = ['rsync', '--archive', '--delete', '--compress', '--progress', '-v', '-h']
-    if dry_run:
-        proc_args.append('--dry-run')
-
-    proc_args.append(src_dir)
-    proc_args.append(dst_dir)
-    subprocess.run(proc_args, encoding='utf8', check=True)
+    sync_dir_dir(args.src_dir, args.dst_dir, args.dry_run)
 
 if __name__ == '__main__':
     main()
