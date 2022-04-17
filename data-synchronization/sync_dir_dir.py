@@ -10,12 +10,12 @@ import util
 def sync_dir_dir(src_path, dst_path, dry_run):
     src_dir = path.abspath(src_path) + '/'
     dst_dir = path.abspath(dst_path) + '/'
-    dry_run = dry_run or os.getenv('SYNC_DRY_RUN')
+    is_dry_run = util.is_dry_run(dry_run)
 
     util.check_dir_exist(src_dir)
     util.check_dir_exist(dst_dir)
     proc_args = ['rsync', '--archive', '--delete', '--compress', '--progress', '-v', '-h']
-    if dry_run:
+    if is_dry_run:
         proc_args.append('--dry-run')
     proc_args.append(src_dir)
     proc_args.append(dst_dir)
