@@ -14,10 +14,11 @@ def check_file_exist(file_path):
         raise RuntimeError('"{}" file does not exist'.format(file_path))
 
 def call_proc(proc_args, capture_output=False, cwd=None):
-    return subprocess.run(
-        proc_args,
-        encoding='utf8', check=True, capture_output=capture_output, cwd=cwd
-    )
+    kwargs = dict(encoding='utf8', check=True, cwd=cwd)
+    if capture_output:
+        kwargs['stdout'] = subprocess.PIPE
+        kwargs['stderr'] = subprocess.PIPE
+    return subprocess.run(proc_args, **kwargs)
 
 def get_disk_path(disk_name):
     return path.join('/media', os.getenv('USER'), disk_name)
