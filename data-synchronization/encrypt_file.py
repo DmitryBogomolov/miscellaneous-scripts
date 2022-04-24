@@ -7,7 +7,8 @@ def decrypt(file_path, is_dry_run):
     args = ['gpg', '--decrypt']
     if is_dry_run:
         args.append('--dry-run')
-    args.extend(['--output', file_path.rstrip('.pgp'), file_path])
+    # strip .pgp extension
+    args.extend(['--output', file_path[:-4], file_path])
     util.call_proc(args)
 
 def encrypt(file_path, user_id, is_dry_run):

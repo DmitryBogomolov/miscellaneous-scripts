@@ -32,7 +32,7 @@ def install():
 
     for item in executables:
         src_path = path.join(LIB_DIR, item)
-        dst_path = path.join(BIN_DIR, item.rstrip('.py'))
+        dst_path = path.join(BIN_DIR, item[:-3])    # strip .py extension
         if path.exists(dst_path):
             os.remove(dst_path)
         os.symlink(src_path, dst_path)
