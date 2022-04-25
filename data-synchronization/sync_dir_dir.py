@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os.path as path
+from os import path
 import util
 
 def sync_dir_dir(src_path, dst_path, dry_run):

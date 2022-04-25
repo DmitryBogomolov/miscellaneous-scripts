@@ -1,7 +1,7 @@
 import sys
 import argparse
 import os
-import os.path as path
+from os import path
 import subprocess
 import time
 
@@ -41,8 +41,8 @@ def parse_cmd_args(description, setup_args, add_dry_run=False):
     return parser.parse_args(sys.argv[1:])
 
 def measure_time(func):
+    begin_time = time.time()
     try:
-        begin_time = time.time()
         func()
     finally:
         end_time = time.time()

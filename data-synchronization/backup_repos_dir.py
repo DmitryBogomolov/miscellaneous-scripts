@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import os.path as path
 import os
+from os import path
 import util
 
 def backup_repo(repo_path, is_dry_run):

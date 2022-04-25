@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-import os.path as path
+from os import path
 import stat
 import shutil
 import util
