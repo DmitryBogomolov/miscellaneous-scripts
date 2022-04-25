@@ -5,7 +5,7 @@ import util
 
 LIST_FILE_NAME = '.backup_disk_cloud'
 
-def backup_dir(dir_path, bucket_path, dir_name, is_dry_run, tool_name):
+def backup_dir(dir_path, bucket_path, dir_name, tool_name, is_dry_run):
     src_path = path.join(dir_path, dir_name)
     dst_path = bucket_path + '/' + dir_name
     print('### "{}" --> "{}"'.format(src_path, dst_path))
@@ -17,7 +17,7 @@ def backup_dir(dir_path, bucket_path, dir_name, is_dry_run, tool_name):
     util.call_proc(proc_args)
     print('')
 
-def backup_disk_cloud(disk, bucket, dry_run, tool_name):
+def backup_disk_cloud(disk, bucket, tool_name, dry_run):
     disk_path = util.get_disk_path(disk)
     bucket_path = 's3://' + bucket
     is_dry_run = util.is_dry_run(dry_run)
@@ -26,7 +26,7 @@ def backup_disk_cloud(disk, bucket, dry_run, tool_name):
     target_dirs = util.read_list_file(path.join(disk_path, LIST_FILE_NAME))
 
     for dir_name in target_dirs:
-        backup_dir(disk_path, bucket_path, dir_name, is_dry_run, tool_name)
+        backup_dir(disk_path, bucket_path, dir_name, tool_name, is_dry_run)
 
 def main():
     def setup_args(parser):
@@ -39,7 +39,7 @@ def main():
         add_dry_run=True
     )
 
-    util.measure_time(lambda: backup_disk_cloud(args.disk, args.bucket, args.dry_run, args.tool))
+    util.measure_time(lambda: backup_disk_cloud(args.disk, args.bucket, args.tool, args.dry_run))
 
 if __name__ == '__main__':
     main()
