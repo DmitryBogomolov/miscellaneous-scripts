@@ -39,8 +39,10 @@ def parse_cmd_args(description, setup_args, add_dry_run=False):
     return parser.parse_args(sys.argv[1:])
 
 def measure_time(func):
-    begin_time = time.time()
-    func()
-    end_time = time.time()
-    duration = int(end_time - begin_time)
-    print('time: {}s'.format(duration))
+    try:
+        begin_time = time.time()
+        func()
+    finally:
+        end_time = time.time()
+        duration = int(end_time - begin_time)
+        print('time: {}s'.format(duration))
