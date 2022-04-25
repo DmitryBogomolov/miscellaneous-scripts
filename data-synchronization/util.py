@@ -15,7 +15,7 @@ def check_file_exist(file_path):
     if not path.isfile(file_path):
         raise RuntimeError('"{}" file does not exist'.format(file_path))
 
-def call_proc(proc_args, capture_output=False, cwd=None):
+def call_proc(proc_args, capture_output = False, cwd = None):
     kwargs = dict(encoding='utf8', check=True, cwd=cwd)
     if capture_output:
         kwargs['stdout'] = subprocess.PIPE
