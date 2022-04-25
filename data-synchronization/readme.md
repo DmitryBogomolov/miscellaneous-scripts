@@ -1,6 +1,10 @@
-Zip storage
+Backup storage
 ```bash
-zip_dir /path/to/_data /path/to/data/data.zip
+encrypt_file /path/to/dump_file
+zip_dir /path/to/dump_file
+# update dump part
+zip_dir /path/to/dump_folder
+encrypt_file /path/to/dump_file
 ```
 
 Backup notes
