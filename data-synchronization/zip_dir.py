@@ -19,14 +19,14 @@ def unzip_archive(archive_path, dir_path):
     shutil.unpack_archive(archive_path, dir_name)
 
 def zip_dir(target_path, output_path):
-    target = path.abspath(target_path)
-    output = path.abspath(output_path) if output_path is not None else None
-    if path.isdir(target):
-        zip_directory(target, output)
-    elif path.isfile(target):
-        unzip_archive(target, output)
+    full_target_path = path.abspath(target_path)
+    full_output_path = output_path and path.abspath(output_path)
+    if path.isdir(full_target_path):
+        zip_directory(full_target_path, full_output_path)
+    elif path.isfile(full_target_path):
+        unzip_archive(full_target_path, full_output_path)
     else:
-        raise RuntimeError('"{}" is neigher directory nor archive file'.format(target))
+        raise RuntimeError('"{}" is neigher directory nor archive file'.format(full_target_path))
 
 def main():
     def setup_args(parser):

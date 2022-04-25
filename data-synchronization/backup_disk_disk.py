@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os.path as path
-import time
 import util
 import sync_dir_dir
 
