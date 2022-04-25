@@ -4,6 +4,8 @@ import os.path as path
 import util
 import sync_dir_dir
 
+LIST_FILE_NAME = '.backup_disk_disk'
+
 def sync_dirs(src_dir, dst_dir, dir_name, dry_run):
     src = path.join(src_dir, dir_name)
     dst = path.join(dst_dir, dir_name)
@@ -17,7 +19,7 @@ def backup_disk_disk(src_disk, dst_disk, dry_run):
 
     util.check_dir_exist(src_path)
     util.check_dir_exist(dst_path)
-    target_dirs = util.read_list_file(path.join(src_path, '.backup_disk_disk'))
+    target_dirs = util.read_list_file(path.join(src_path, LIST_FILE_NAME))
 
     for target_dir in target_dirs:
         sync_dirs(src_path, dst_path, target_dir, dry_run)

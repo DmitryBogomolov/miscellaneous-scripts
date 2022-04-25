@@ -5,6 +5,8 @@ import os.path as path
 import subprocess
 import time
 
+DRY_RUN_ENV = 'SYNC_DRY_RUN'
+
 def check_dir_exist(dir_path):
     if not path.isdir(dir_path):
         raise RuntimeError('"{}" directory does not exist'.format(dir_path))
@@ -24,7 +26,7 @@ def get_disk_path(disk_name):
     return path.join('/media', os.getenv('USER'), disk_name)
 
 def is_dry_run(dry_run):
-    return dry_run or os.getenv('SYNC_DRY_RUN')
+    return dry_run or os.getenv(DRY_RUN_ENV)
 
 def read_list_file(file_path):
     check_file_exist(file_path)

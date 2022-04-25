@@ -3,6 +3,8 @@
 import os.path as path
 import util
 
+LIST_FILE_NAME = '.backup_disk_cloud'
+
 def backup_dir(dir_path, bucket_path, dir_name, is_dry_run, tool_name):
     src_path = path.join(dir_path, dir_name)
     dst_path = bucket_path + '/' + dir_name
@@ -21,7 +23,7 @@ def backup_disk_cloud(disk, bucket, dry_run, tool_name):
     is_dry_run = util.is_dry_run(dry_run)
 
     util.check_dir_exist(disk_path)
-    target_dirs = util.read_list_file(path.join(disk_path, '.backup_disk_cloud'))
+    target_dirs = util.read_list_file(path.join(disk_path, LIST_FILE_NAME))
 
     for dir_name in target_dirs:
         backup_dir(disk_path, bucket_path, dir_name, is_dry_run, tool_name)
