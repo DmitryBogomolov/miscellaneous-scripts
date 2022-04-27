@@ -9,18 +9,18 @@ DRY_RUN_ENV = 'SYNC_DRY_RUN'
 
 def check_dir_exist(dir_path):
     if not path.isdir(dir_path):
-        raise RuntimeError('"{}" directory does not exist'.format(dir_path))
+        raise NotADirectoryError('"{}" directory does not exist'.format(dir_path))
 
 def check_file_exist(file_path):
     if not path.isfile(file_path):
-        raise RuntimeError('"{}" file does not exist'.format(file_path))
+        raise FileNotFoundError('"{}" file does not exist'.format(file_path))
 
 def call_proc(proc_args, capture_output = False, cwd = None):
-    kwargs = dict(encoding='utf8', check=True, cwd=cwd)
+    kwargs = {}
     if capture_output:
         kwargs['stdout'] = subprocess.PIPE
         kwargs['stderr'] = subprocess.PIPE
-    return subprocess.run(proc_args, **kwargs)
+    return subprocess.run(proc_args, encoding='utf8', check=True, cwd=cwd, **kwargs)
 
 def get_disk_path(disk_name):
     return path.join('/media', os.getenv('USER'), disk_name)
