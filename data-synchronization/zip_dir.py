@@ -4,6 +4,8 @@ from os import path
 import shutil
 import util
 
+DEFAULT_FORMAT = 'zip'
+
 def zip_directory(dir_path, archive_path, archive_format):
     base_name = archive_path or dir_path
     shutil.make_archive(base_name, archive_format, dir_path)
@@ -16,19 +18,18 @@ def unzip_archive(archive_path, dir_path, archive_format):
         dir_name += '_'
     shutil.unpack_archive(archive_path, dir_name, archive_format)
 
-def zip_dir(target_path, output_path, archive_format):
+def zip_dir(target_path, output_path, archive_format = DEFAULT_FORMAT):
     full_target_path = path.abspath(target_path)
     full_output_path = output_path and path.abspath(output_path)
-    target_format = archive_format or 'zip'
     if path.isfile(full_target_path):
-        unzip_archive(full_target_path, full_output_path, target_format)
+        unzip_archive(full_target_path, full_output_path, archive_format)
     else:
-        zip_directory(full_target_path, full_output_path, target_format)
+        zip_directory(full_target_path, full_output_path, archive_format)
 
 def main():
     def setup_args(parser):
         parser.add_argument('target', help='path to directory or archive')
-        parser.add_argument('--format', help='archive format')
+        parser.add_argument('--format', default=DEFAULT_FORMAT, help='archive format')
         parser.add_argument('--output', help='path to archive or directory')
     args = util.parse_cmd_args(
         'Packs directory into archive or unpacks archive into directory.',
