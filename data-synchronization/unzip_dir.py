@@ -8,7 +8,7 @@ DEFAULT_FORMAT = 'zip'
 
 def unzip_dir(archive_path, output_path, archive_format = DEFAULT_FORMAT):
     archive_path = path.abspath(archive_path)
-    output_path = output_path and path.abspath(output_path)
+    output_path = util.normalize_path_arg(output_path)
     dir_name = output_path or path.splitext(archive_path)[0]
     if dir_name == archive_path:
         dir_name += '_'

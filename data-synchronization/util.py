@@ -7,6 +7,9 @@ import time
 
 DRY_RUN_ENV = 'SYNC_DRY_RUN'
 
+def normalize_path_arg(raw_path):
+    return raw_path and path.abspath(raw_path)
+
 def check_dir_exist(dir_path):
     if not path.isdir(dir_path):
         raise NotADirectoryError('"{}" directory does not exist'.format(dir_path))

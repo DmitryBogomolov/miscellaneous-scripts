@@ -10,7 +10,7 @@ def get_decrypted_name(name):
 
 def decrypt_file(file_path, output_path):
     file_path = path.abspath(file_path)
-    output_path = output_path and path.abspath(output_path)
+    output_path = util.normalize_path_arg(output_path)
     output = output_path or get_decrypted_name(file_path)
     util.call_proc(['gpg', '--decrypt', '--output', output, file_path])
 

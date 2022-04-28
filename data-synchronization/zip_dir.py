@@ -8,7 +8,7 @@ DEFAULT_FORMAT = 'zip'
 
 def zip_dir(dir_path, output_path, archive_format = DEFAULT_FORMAT):
     dir_path = path.abspath(dir_path)
-    output_path = output_path and path.abspath(output_path)
+    output_path = util.normalize_path_arg(output_path)
     base_name = output_path or dir_path
     shutil.make_archive(base_name, archive_format, dir_path)
     if output_path:

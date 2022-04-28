@@ -11,7 +11,7 @@ def make_tmp_dir(output_path):
 
 def encrypt_dir(dir_path, output_path, recipient):
     dir_path = path.abspath(dir_path)
-    output_path = output_path and path.abspath(output_path)
+    output_path = util.normalize_path_arg(output_path)
     output = output_path or encrypt_file.get_encrypted_name(dir_path)
     with make_tmp_dir(output) as tmp_path:
         tmp_archive_path = path.join(tmp_path, 'archive')

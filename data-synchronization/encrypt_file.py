@@ -10,7 +10,7 @@ def get_encrypted_name(name):
 
 def encrypt_file(file_path, output_path, recipient):
     file_path = path.abspath(file_path)
-    output_path = output_path and path.abspath(output_path)
+    output_path = util.normalize_path_arg(output_path)
     output = output_path or get_encrypted_name(file_path)
     util.call_proc(['gpg', '--recipient', recipient, '--encrypt', '--output', output, file_path])
 
