@@ -4,6 +4,7 @@ import os
 from os import path
 import subprocess
 import time
+import tempfile
 
 DRY_RUN_ENV = 'SYNC_DRY_RUN'
 DEFAULT_ARCHIVE_FORMAT = 'zip'
@@ -11,6 +12,9 @@ ENCRYPTED_FILE_EXTENSION = '.pgp'
 
 def normalize_path_arg(raw_path):
     return raw_path and path.abspath(raw_path)
+
+def make_tmp_dir(output_path):
+    return tempfile.TemporaryDirectory(dir=path.dirname(output_path))
 
 def check_dir_exist(dir_path):
     if not path.isdir(dir_path):
