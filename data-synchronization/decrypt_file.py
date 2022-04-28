@@ -3,10 +3,8 @@
 from os import path
 import util
 
-FILE_EXTENSION = '.pgp'
-
 def get_decrypted_name(name):
-    return name[:-len(FILE_EXTENSION)]
+    return name[:-len(util.ENCRYPTED_FILE_EXTENSION)]
 
 def decrypt_file(file_path, output_path):
     file_path = path.abspath(file_path)

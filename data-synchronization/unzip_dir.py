@@ -4,9 +4,7 @@ from os import path
 import shutil
 import util
 
-DEFAULT_FORMAT = 'zip'
-
-def unzip_dir(archive_path, output_path, archive_format = DEFAULT_FORMAT):
+def unzip_dir(archive_path, output_path, archive_format = util.DEFAULT_ARCHIVE_FORMAT):
     archive_path = path.abspath(archive_path)
     output_path = util.normalize_path_arg(output_path)
     dir_name = output_path or path.splitext(archive_path)[0]
@@ -17,7 +15,7 @@ def unzip_dir(archive_path, output_path, archive_format = DEFAULT_FORMAT):
 def main():
     def setup_args(parser):
         parser.add_argument('archive', help='path to archive')
-        parser.add_argument('--format', default=DEFAULT_FORMAT, help='archive format')
+        parser.add_argument('--format', default=util.DEFAULT_ARCHIVE_FORMAT, help='archive format')
         parser.add_argument('--output', help='path to directory')
     args = util.parse_cmd_args(
         'Unpacks directory from archive.',
