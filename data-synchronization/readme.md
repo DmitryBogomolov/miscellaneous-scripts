@@ -1,10 +1,8 @@
 Backup storage
 ```bash
-encrypt_file /path/to/dump_file
-zip_dir /path/to/dump_file
+decrypt_dir /path/to/dump_dir.pgp
 # update dump part
-zip_dir /path/to/dump_folder
-encrypt_file /path/to/dump_file
+encrypt_dir /path/to/dump_dir
 ```
 
 Backup notes
