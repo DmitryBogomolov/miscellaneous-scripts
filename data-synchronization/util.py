@@ -7,7 +7,6 @@ import time
 import tempfile
 
 DRY_RUN_ENV = 'SYNC_DRY_RUN'
-DEFAULT_ARCHIVE_FORMAT = 'zip'
 ENCRYPTED_FILE_EXTENSION = '.pgp'
 
 def normalize_path_arg(raw_path):

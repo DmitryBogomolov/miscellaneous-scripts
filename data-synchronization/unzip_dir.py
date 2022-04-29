@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 
 from os import path
-import shutil
 import util
 
-def unzip_dir(archive_path, output_path, archive_format = util.DEFAULT_ARCHIVE_FORMAT):
+def get_dir_path(archive_path):
+    dir_path, ext = path.splitext(archive_path)
+    if not ext:
+        dir_path += '_zip'
+    return dir_path
+
+def unzip_dir(archive_path, output_path):
     archive_path = path.abspath(archive_path)
-    output_path = util.normalize_path_arg(output_path)
-    dir_name = output_path or path.splitext(archive_path)[0]
-    if dir_name == archive_path:
-        dir_name += '_'
-    shutil.unpack_archive(archive_path, dir_name, archive_format)
+    output_path = util.normalize_path_arg(output_path) or get_dir_path(archive_path)
+    util.call_proc(['unzip', '-d', output_path, archive_path])
 
 def main():
     def setup_args(parser):
         parser.add_argument('archive', help='path to archive')
-        parser.add_argument('--format', default=util.DEFAULT_ARCHIVE_FORMAT, help='archive format')
         parser.add_argument('--output', help='path to directory')
     args = util.parse_cmd_args(
         'Unpacks directory from archive.',
         setup_args
     )
 
-    unzip_dir(args.archive, args.output, args.format)
+    unzip_dir(args.archive, args.output)
 
 if __name__ == '__main__':
     main()
