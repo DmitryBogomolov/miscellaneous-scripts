@@ -31,17 +31,17 @@ def call_proc(proc_args, capture_output = False, cwd = None):
     return subprocess.run(proc_args, encoding='utf8', check=True, cwd=cwd, **kwargs)
 
 def get_disk_path(disk_name):
-    return path.join('/media', os.getenv('USER'), disk_name)
+    return path.join(path.expandvars('/media/$USER'), disk_name)
 
 def is_dry_run(dry_run):
-    return dry_run or os.getenv(DRY_RUN_ENV)
+    return dry_run or bool(os.getenv(DRY_RUN_ENV))
 
 def read_list_file(file_path):
     check_file_exist(file_path)
-    with open(file_path, 'r', encoding='utf8') as file_buffer:
-        return [line.strip() for line in file_buffer.readlines()]
+    with open(file_path, 'r', encoding='utf8') as file_obj:
+        return [line.strip() for line in file_obj.readlines()]
 
-def parse_cmd_args(description, setup_args, add_dry_run=False):
+def parse_cmd_args(description, setup_args, add_dry_run = False):
     parser = argparse.ArgumentParser(description=description)
     setup_args(parser)
     if add_dry_run:
