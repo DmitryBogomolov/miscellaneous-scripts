@@ -3,9 +3,13 @@
 from os import path
 import util
 
+def get_file_path(dir_path):
+    return dir_path + '.zip'
+
 def zip_dir(dir_path, output_path):
     dir_path = path.abspath(dir_path)
-    output_path = util.normalize_path_arg(output_path) or dir_path
+    output_path = util.normalize_path_arg(output_path) or get_file_path(dir_path)
+    util.check_dir_exist(dir_path)
     util.call_proc(['zip', '-Ar', output_path, '.'], cwd=dir_path)
 
 def main():

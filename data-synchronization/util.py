@@ -7,7 +7,6 @@ import time
 import tempfile
 
 DRY_RUN_ENV = 'SYNC_DRY_RUN'
-ENCRYPTED_FILE_EXTENSION = '.pgp'
 
 def normalize_path_arg(raw_path):
     return raw_path and path.abspath(raw_path)

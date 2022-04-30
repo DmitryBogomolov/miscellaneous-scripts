@@ -12,6 +12,7 @@ def get_dir_path(archive_path):
 def unzip_dir(archive_path, output_path):
     archive_path = path.abspath(archive_path)
     output_path = util.normalize_path_arg(output_path) or get_dir_path(archive_path)
+    util.check_file_exist(archive_path)
     util.call_proc(['unzip', '-d', output_path, archive_path])
 
 def main():
