@@ -7,6 +7,5 @@ COPY compress_images.py /usr
 # Build
 # docker build -t compress_images:<tag> -f compress_images.dockerfile .
 
-# Use
-# docker run -it --rm -v $PWD:/src compress_images:<tag> python3 /usr/compress_images.py *.jpg --quality 20 --out-dir tmp
-# chown -R $USER:$USER tmp
+# Run
+# docker run -it --rm -v $PWD:/src -u 1000:1000 compress_images:<tag> python3 /usr/compress_images.py--quality 20 --out-dir tmp *.jpg
