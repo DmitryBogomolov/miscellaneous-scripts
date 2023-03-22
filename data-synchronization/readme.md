@@ -1,3 +1,17 @@
+# Data Synchronization
+
+Python wrappers over several commands - rsync, zip/unzip, gpg, git, s3 sync.
+
+Synchronizes content between directories and with s3 storage. Encrypts/decrypts files and directories. Dumps git repositories.
+
+----
+Installation (copy to ~/.local/lib/data-synchronization and make symlinks in ~/.local/bin).
+```bash
+python3 setup.py on
+python3 setup.py off
+```
+
+----
 Backup storage
 ```bash
 decrypt_dir /path/to/dump_dir.pgp
