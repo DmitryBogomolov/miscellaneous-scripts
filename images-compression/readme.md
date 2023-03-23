@@ -5,7 +5,8 @@ Python wrapper over [convert](https://imagemagick.org/script/convert.php) comman
 ----
 Installation (copy file without extension to ~/.local/bin and it executable).
 ```bash
-bash install.sh
+python3 setup.py on
+python3 setup.py off
 ```
 
 ----

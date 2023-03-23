@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-from typing import List, cast
+from typing import List
 import os
 from os import path
 import stat
 import shutil
 import util
 
-LIB_DIR = path.join(cast(str, os.getenv('HOME')), '.local/lib/data-synchronization')
-BIN_DIR = path.join(cast(str, os.getenv('HOME')), '.local/bin')
+LIB_DIR = path.expanduser('~/.local/lib/data-synchronization')
+BIN_DIR = path.expanduser('~/.local/bin')
 
 def is_executable(file_path: str) -> bool:
     with open(file_path, 'r', encoding='utf8') as file_buffer:
