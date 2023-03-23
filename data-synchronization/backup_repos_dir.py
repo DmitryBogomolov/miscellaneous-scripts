@@ -4,17 +4,17 @@ import os
 from os import path
 import util
 
-def backup_repo(repo_path, is_dry_run):
+def backup_repo(repo_path: str, is_dry_run: bool) -> None:
     ret = util.call_proc(['git', 'config', 'remote.origin.url'], capture_output=True, cwd=repo_path)
     remote_url = ret.stdout.strip()
-    print('### "{}" --> "{}"'.format(remote_url, repo_path))
+    print(f'### "{remote_url}" --> "{repo_path}"')
     proc_args = ['git', 'pull', '--prune', '--verbose', '--force', '--ff-only', '--stat']
     if is_dry_run:
         proc_args.append('--dry-run')
     util.call_proc(proc_args, cwd=repo_path)
     print('')
 
-def backup_repos_dir(repos_path, dry_run):
+def backup_repos_dir(repos_path: str, dry_run: bool) -> None:
     repos_dir = path.abspath(repos_path)
     is_dry_run = util.is_dry_run(dry_run)
 
@@ -29,8 +29,8 @@ def backup_repos_dir(repos_path, dry_run):
     for repo_dir in repo_dirs:
         backup_repo(repo_dir, is_dry_run)
 
-def main():
-    def setup_args(parser):
+def main() -> None:
+    def setup_args(parser: util.ArgumentParser):
         parser.add_argument('repos_dir', help='repositories directory')
     args = util.parse_cmd_args(
         'Synchronizes repositories.',

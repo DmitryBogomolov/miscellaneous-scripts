@@ -3,7 +3,7 @@
 from os import path
 import util
 
-def sync_dir_dir(src_path, dst_path, dry_run):
+def sync_dir_dir(src_path: str, dst_path: str, dry_run: bool) -> None:
     src_dir = path.abspath(src_path) + '/'
     dst_dir = path.abspath(dst_path) + '/'
     is_dry_run = util.is_dry_run(dry_run)
@@ -18,8 +18,8 @@ def sync_dir_dir(src_path, dst_path, dry_run):
 
     util.call_proc(proc_args)
 
-def main():
-    def setup_args(parser):
+def main() -> None:
+    def setup_args(parser: util.ArgumentParser) -> None:
         parser.add_argument('src_dir', help='source directory')
         parser.add_argument('dst_dir', help='target directory')
     args = util.parse_cmd_args(

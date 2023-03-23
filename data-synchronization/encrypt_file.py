@@ -3,10 +3,10 @@
 from os import path
 import util
 
-def get_encrypted_name(file_path):
+def get_encrypted_name(file_path: str) -> str:
     return file_path + '.pgp'
 
-def encrypt_file(file_path, output_path, recipient):
+def encrypt_file(file_path: str, output_path: str, recipient: str) -> None:
     file_path = path.abspath(file_path)
     output_path = util.normalize_path_arg(output_path)
     util.check_file_exist(file_path)
@@ -15,8 +15,8 @@ def encrypt_file(file_path, output_path, recipient):
     output = output_path or get_encrypted_name(file_path)
     util.call_proc(['gpg', '--recipient', recipient, '--encrypt', '--output', output, file_path])
 
-def main():
-    def setup_args(parser):
+def main() -> None:
+    def setup_args(parser: util.ArgumentParser) -> None:
         parser.add_argument('file', help='path to file')
         parser.add_argument('--output', help='path to encrypted file')
         parser.add_argument('--recipient', required=True, help='encryption recipient')

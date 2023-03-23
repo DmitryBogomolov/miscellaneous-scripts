@@ -6,14 +6,14 @@ import sync_dir_dir
 
 LIST_FILE_NAME = '.backup_disk_disk'
 
-def sync_dirs(src_dir, dst_dir, dir_name, dry_run):
+def sync_dirs(src_dir: str, dst_dir: str, dir_name: str, dry_run: bool) -> None:
     src = path.join(src_dir, dir_name)
     dst = path.join(dst_dir, dir_name)
-    print('### "{}" --> "{}"'.format(src, dst))
+    print(f'### "{src}" --> "{dst}"')
     sync_dir_dir.sync_dir_dir(src, dst, dry_run)
     print('')
 
-def backup_disk_disk(src_disk, dst_disk, dry_run):
+def backup_disk_disk(src_disk: str, dst_disk: str, dry_run: bool) -> None:
     src_path = util.get_disk_path(src_disk)
     dst_path = util.get_disk_path(dst_disk)
 
@@ -24,8 +24,8 @@ def backup_disk_disk(src_disk, dst_disk, dry_run):
     for target_dir in target_dirs:
         sync_dirs(src_path, dst_path, target_dir, dry_run)
 
-def main():
-    def setup_args(parser):
+def main() -> None:
+    def setup_args(parser: util.ArgumentParser) -> None:
         parser.add_argument('src_disk', help='source disk name')
         parser.add_argument('dst_disk', help='target disk name')
     args = util.parse_cmd_args(
