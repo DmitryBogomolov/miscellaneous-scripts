@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from typing import Tuple, NamedTuple
 from os import path
 import os
 import subprocess
@@ -7,24 +8,29 @@ import shutil
 
 SUFFIX = '.CMPRSIMG'
 
-class ImageInfo:
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.file_size = path.getsize(file_path)
-        w, h = get_image_size(file_path)
-        self.image_size = (w, h)
+ImageSize = Tuple[int, int]
 
-    def __str__(self):
-        return '{} ({}K, {}x{})'.format(
-            self.file_path, round(self.file_size / 1024),
-            self.image_size[0], self.image_size[1]
-        )
+class ImageInfo(NamedTuple):
+    file_path: str
+    file_size: int
+    image_size: ImageSize
 
-def compress_image(file_path, quality, max_size, is_inplace, out_dir):
+    def __str__(self) -> str:
+        kb_size = round(self.file_size / 1024)
+        w, h = self.image_size
+        return f'{self.file_path} ({kb_size}K, {w}x{h})'
+
+    @classmethod
+    def create(cls, file_path: str) -> 'ImageInfo':
+        return ImageInfo(file_path, path.getsize(file_path), get_image_size(file_path))
+
+def compress_image(
+    file_path: str, quality: int, max_size: int, is_inplace: bool, out_dir: str
+) -> Tuple[ImageInfo, ImageInfo]:
     src_file = path.abspath(file_path)
     if not path.isfile(src_file):
-        raise RuntimeError('"{}" does not exist'.format(src_file))
-    src_info = ImageInfo(src_file)
+        raise RuntimeError(f'"{src_file}" does not exist')
+    src_info = ImageInfo.create(src_file)
 
     # Interim file is used to preserve original file (for inplace case) so that
     # its stats could then be copied.
@@ -48,10 +54,10 @@ def compress_image(file_path, quality, max_size, is_inplace, out_dir):
     dst_file = prepare_dst_file(src_file, is_inplace, out_dir)
     # Using os.rename causes "Invalid cross-device link" error in docker.
     shutil.move(interim_file, dst_file)
-    dst_info = ImageInfo(dst_file)
+    dst_info = ImageInfo.create(dst_file)
     return src_info, dst_info
 
-def get_resize_param(image_size, max_size):
+def get_resize_param(image_size: ImageSize, max_size: int) -> str:
     w_orig, h_orig = image_size
     w_curr, h_curr = w_orig, h_orig
     if w_orig > h_orig:
@@ -60,9 +66,9 @@ def get_resize_param(image_size, max_size):
     else:
         h_curr = max_size
         w_curr = round(w_orig * h_curr / h_orig)
-    return str(w_curr) + 'x' + str(h_curr) + '>'
+    return f'{w_curr}x{h_curr}>'
 
-def get_image_size(file_path):
+def get_image_size(file_path: str) -> ImageSize:
     proc = subprocess.run(
         ['identify', '-format', r'%w %h', file_path],
         encoding='utf8', check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -70,11 +76,11 @@ def get_image_size(file_path):
     w, h = map(int, proc.stdout.split())
     return (w, h)
 
-def get_interim_file_path(file_path):
+def get_interim_file_path(file_path: str) -> str:
     name, ext = path.splitext(path.basename(file_path))
     return path.join(path.dirname(file_path), name + SUFFIX + ext)
 
-def prepare_dst_file(file_path, is_inplace, out_dir):
+def prepare_dst_file(file_path: str, is_inplace: bool, out_dir: str) -> str:
     if is_inplace:
         return file_path
     dir_path = ''
@@ -85,30 +91,34 @@ def prepare_dst_file(file_path, is_inplace, out_dir):
     os.makedirs(dir_path, exist_ok=True)
     return path.join(dir_path, path.basename(file_path))
 
-def main():
+def main() -> None:
     import sys
     import argparse
 
-    def check_quality_arg(val):
+    def check_quality_arg(val: str) -> int:
         try:
             quality = int(val)
             if quality < 10 or quality > 100:
                 raise ValueError('value is out of range [10, 100]')
             return quality
-        except Exception as e:
-            raise argparse.ArgumentTypeError(e)
+        except Exception as err:
+            raise argparse.ArgumentTypeError(err)
 
-    def check_max_size_arg(val):
+    def check_max_size_arg(val: str) -> int:
         try:
             max_size = int(val)
             if max_size < 400 or max_size > 8000:
                 raise ValueError('value is out of range [400, 8000]')
             return max_size
-        except Exception as e:
-            raise argparse.ArgumentTypeError(e)
+        except Exception as err:
+            raise argparse.ArgumentTypeError(err)
 
     parser = argparse.ArgumentParser(description='Compresses JPEG files')
-    parser.add_argument('targets', type=str, nargs='+', help='files to process')
+    parser.add_argument(
+        'targets',
+        type=str, nargs='+',
+        help='files to process'
+    )
     parser.add_argument(
         '--quality',
         dest='quality', type=check_quality_arg,
@@ -137,11 +147,10 @@ def main():
                 target,
                 args.quality, args.max_size, args.is_inplace, args.out_dir
             )
-            print('{} -> {} // {}'.format(
-                src, dst, format(dst.file_size / src.file_size * 100, '.2f') + '%'
-            ))
-        except Exception as e:
-            print(e)
+            ratio = dst.file_size / src.file_size
+            print(f'{src} -> {dst} // {ratio:.2f}')
+        except Exception as err:
+            print(err)
 
 if __name__ == '__main__':
     main()
