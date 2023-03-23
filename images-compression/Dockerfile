@@ -6,7 +6,7 @@ COPY compress_images.py /usr/local/bin/compress_images
 RUN chmod +x /usr/local/bin/compress_images
 
 # Build
-# docker build -t compress_images:<tag> -f compress_images.dockerfile .
+# docker build -t compress_images:<tag> .
 
 # Run
 # docker run -it --rm -v $PWD:/src -u 1000:1000 compress_images:<tag> compress_images --quality 20 --out-dir tmp *.jpg

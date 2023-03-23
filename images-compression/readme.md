@@ -17,7 +17,7 @@ compress_images --quality 20 --out-dir tmp file-1.jpg file-2.jpg ... file-n.jpg
 ----
 Building image
 ```bash
-docker build -t compress_images:<tag> -f compress_images.dockerfile .
+docker build -t compress_images:<tag> .
 ```
 
 Running
