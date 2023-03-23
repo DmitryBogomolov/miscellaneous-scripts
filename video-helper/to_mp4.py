@@ -5,10 +5,10 @@ from os import path
 import shutil
 import subprocess
 
-def to_mp4(file_name, make_safe_name=False):
+def to_mp4(file_name: str, make_safe_name: bool = False) -> str:
     src_file = path.abspath(file_name)
     if not path.isfile(src_file):
-        raise RuntimeError('file "{}" does not exist'.format(src_file))
+        raise RuntimeError(f'file "{src_file}" does not exist')
 
     src_dir = path.dirname(src_file)
     src_name = path.basename(src_file)
@@ -24,13 +24,13 @@ def to_mp4(file_name, make_safe_name=False):
 
     try:
         call_ffmpeg(src_file, dst_file)
-    except:
-        raise RuntimeError('failed to convert "{}"'.format(src_file))
+    except subprocess.SubprocessError as err:
+        raise RuntimeError(f'failed to convert "{src_file}"') from err
 
     shutil.copystat(src_file, dst_file)
     return dst_file
 
-def call_ffmpeg(src_path, dst_path):
+def call_ffmpeg(src_path: str, dst_path: str) -> None:
     args = [
         'ffmpeg',
         '-i', src_path,
@@ -50,7 +50,7 @@ def call_ffmpeg(src_path, dst_path):
             os.remove(dst_path)
         raise
 
-def main():
+def main() -> None:
     import sys
     import argparse
 
