@@ -7,6 +7,10 @@ import subprocess
 import shutil
 
 SUFFIX = '.CMPRSIMG'
+MIN_QUALITY = 10
+MAX_QUALITY = 100
+MIN_MAX_SIZE = 400
+MAX_MAX_SIZE = 8000
 
 ImageSize = Tuple[int, int]
 
@@ -98,8 +102,8 @@ def main() -> None:
     def check_quality_arg(val: str) -> int:
         try:
             quality = int(val)
-            if quality < 10 or quality > 100:
-                raise ValueError('value is out of range [10, 100]')
+            if quality < MIN_QUALITY or quality > MAX_QUALITY:
+                raise ValueError(f'value is out of range [{MIN_QUALITY}, {MAX_QUALITY}]')
             return quality
         except Exception as err:
             raise argparse.ArgumentTypeError(err)
@@ -107,8 +111,8 @@ def main() -> None:
     def check_max_size_arg(val: str) -> int:
         try:
             max_size = int(val)
-            if max_size < 400 or max_size > 8000:
-                raise ValueError('value is out of range [400, 8000]')
+            if max_size < MIN_MAX_SIZE or MAX_MAX_SIZE > 8000:
+                raise ValueError(f'value is out of range [{MIN_MAX_SIZE}, {MAX_MAX_SIZE}]')
             return max_size
         except Exception as err:
             raise argparse.ArgumentTypeError(err)
@@ -122,12 +126,12 @@ def main() -> None:
     parser.add_argument(
         '--quality',
         dest='quality', type=check_quality_arg,
-        help='compression quality / [10, 100]'
+        help=f'compression quality / [{MIN_QUALITY}, {MAX_QUALITY}]'
     )
     parser.add_argument(
         '--max-size',
         dest='max_size', type=check_max_size_arg,
-        help='max width/height (which is greater) / [400, 8000]'
+        help=f'max width/height (which is greater) / [{MIN_MAX_SIZE}, {MAX_MAX_SIZE}]'
     )
     parser.add_argument(
         '--inplace',
