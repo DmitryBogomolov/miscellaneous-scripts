@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Tuple, NamedTuple
+from typing import Tuple, NamedTuple, Optional
 from os import path
 import os
 import subprocess
@@ -29,7 +29,13 @@ class ImageInfo(NamedTuple):
         return ImageInfo(file_path, path.getsize(file_path), get_image_size(file_path))
 
 def compress_image(
-    file_path: str, quality: int, max_size: int, is_inplace: bool, out_dir: str
+    file_path: str,
+    out_dir: Optional[str] = None,
+    quality: Optional[int] = None,
+    max_size: Optional[int] = None,
+    max_width: Optional[int] = None,
+    max_height: Optional[int] = None,
+    is_inplace: bool = False
 ) -> Tuple[ImageInfo, ImageInfo]:
     src_file = path.abspath(file_path)
     if not path.isfile(src_file):
@@ -43,8 +49,16 @@ def compress_image(
     # Since 6.9.10-23 (approximately) version `-quality` outputs significantly larger (~6x) file.
     # This version is used in "focal" (u20) repositories.
     args = ['convert']
+    new_size: Optional[ImageSize] = None
     if max_size is not None:
-        args.extend(['-resize', get_resize_param(src_info.image_size, max_size)])
+        new_size = restrict_max_size(src_info.image_size, max_size)
+    elif max_width is not None:
+        new_size = restrict_max_width(src_info.image_size, max_width)
+    elif max_height is not None:
+        new_size = restrict_max_height(src_info.image_size, max_height)
+    if new_size is not None:
+        width, height = new_size
+        args.extend(['-resize', f'{width}x{height}>'])
     if quality is not None:
         args.extend(['-quality', str(quality) + '%'])
     args.extend([src_file, interim_file])
@@ -61,16 +75,24 @@ def compress_image(
     dst_info = ImageInfo.create(dst_file)
     return src_info, dst_info
 
-def get_resize_param(image_size: ImageSize, max_size: int) -> str:
+def restrict_max_size(image_size: ImageSize, max_size: int) -> ImageSize:
     w_orig, h_orig = image_size
-    w_curr, h_curr = w_orig, h_orig
     if w_orig > h_orig:
-        w_curr = max_size
-        h_curr = round(h_orig * w_curr / w_orig)
+        return restrict_max_width(image_size, max_size)
     else:
-        h_curr = max_size
-        w_curr = round(w_orig * h_curr / h_orig)
-    return f'{w_curr}x{h_curr}>'
+        return restrict_max_height(image_size, max_size)
+
+def restrict_max_width(image_size: ImageSize, max_width: int) -> ImageSize:
+    w_orig, h_orig = image_size
+    w_curr = max_width
+    h_curr = round(h_orig * w_curr / w_orig)
+    return (w_curr, h_curr)
+
+def restrict_max_height(image_size: ImageSize, max_height: int) -> ImageSize:
+    w_orig, h_orig = image_size
+    h_curr = max_height
+    w_curr = round(w_orig * h_curr / h_orig)
+    return (w_curr, h_curr)
 
 def get_image_size(file_path: str) -> ImageSize:
     proc = subprocess.run(
@@ -84,7 +106,7 @@ def get_interim_file_path(file_path: str) -> str:
     name, ext = path.splitext(path.basename(file_path))
     return path.join(path.dirname(file_path), name + SUFFIX + ext)
 
-def prepare_dst_file(file_path: str, is_inplace: bool, out_dir: str) -> str:
+def prepare_dst_file(file_path: str, is_inplace: bool, out_dir: Optional[str]) -> str:
     if is_inplace:
         return file_path
     dir_path = ''
@@ -134,6 +156,16 @@ def main() -> None:
         help=f'max width/height (which is greater) / [{MIN_MAX_SIZE}, {MAX_MAX_SIZE}]'
     )
     parser.add_argument(
+        '--max-width',
+        dest='max_width', type=check_max_size_arg,
+        help=f'max width / [{MIN_MAX_SIZE}, {MAX_MAX_SIZE}]'
+    )
+    parser.add_argument(
+        '--max-height',
+        dest='max_height', type=check_max_size_arg,
+        help=f'max height / [{MIN_MAX_SIZE}, {MAX_MAX_SIZE}]'
+    )
+    parser.add_argument(
         '--inplace',
         dest='is_inplace', action='store_true', default=False,
         help='replace file'
@@ -148,8 +180,13 @@ def main() -> None:
     for target in args.targets:
         try:
             src, dst = compress_image(
-                target,
-                args.quality, args.max_size, args.is_inplace, args.out_dir
+                file_path=target,
+                out_dir=args.out_dir,
+                quality=args.quality,
+                max_size=args.max_size,
+                max_width=args.max_width,
+                max_height=args.max_height,
+                is_inplace=args.is_inplace,
             )
             ratio = dst.file_size / src.file_size
             print(f'{src} -> {dst} // {ratio:.2f}')
