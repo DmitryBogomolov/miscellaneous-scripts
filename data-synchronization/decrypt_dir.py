@@ -5,7 +5,7 @@ import util
 import decrypt_file
 import unzip_dir
 
-def decrypt_dir(file_path, output_path):
+def decrypt_dir(file_path: str, output_path: str) -> None:
     file_path = path.abspath(file_path)
     output_path = util.normalize_path_arg(output_path)
     output = output_path or decrypt_file.get_decrypted_name(file_path)
@@ -14,8 +14,8 @@ def decrypt_dir(file_path, output_path):
         decrypt_file.decrypt_file(file_path, tmp_archive_path)
         unzip_dir.unzip_dir(tmp_archive_path, output)
 
-def main():
-    def setup_args(parser):
+def main() -> None:
+    def setup_args(parser: util.ArgumentParser) -> None:
         parser.add_argument('file', help='path to encrypted file')
         parser.add_argument('--output', help='path to directory')
     args = util.parse_cmd_args(

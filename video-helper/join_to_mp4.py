@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
+from typing import List
 from join_files import join_files
 from to_mp4_many import to_mp4_many
 
-def convert_and_join(file_names, out_file):
+def convert_and_join(file_names: List[str], out_file: str) -> None:
     mp4_file_names = to_mp4_many(file_names, len(file_names))
     join_files(mp4_file_names, out_file)
 
-def main():
+def main() -> None:
     import sys
     import argparse
 

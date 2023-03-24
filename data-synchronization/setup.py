@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 
+from typing import List
 import os
 from os import path
 import stat
 import shutil
 import util
 
-LIB_DIR = path.join(os.getenv('HOME'), '.local/lib/data-synchronization')
-BIN_DIR = path.join(os.getenv('HOME'), '.local/bin')
+LIB_DIR = path.expanduser('~/.local/lib/data-synchronization')
+BIN_DIR = path.expanduser('~/.local/bin')
 
-def is_executable(file_path):
+def is_executable(file_path: str) -> bool:
     with open(file_path, 'r', encoding='utf8') as file_buffer:
         line = file_buffer.readline().strip()
         return line.startswith('#!/usr/bin/env')
 
-def install():
+def install() -> None:
     target_dir = path.dirname(path.abspath(__file__))
-    target_files = []
-    executables = []
+    target_files: List[str] = []
+    executables: List[str] = []
     for item in os.listdir(target_dir):
         if path.isfile(item) and item.endswith('.py') and item != __file__:
             target_files.append(item)
@@ -41,7 +42,7 @@ def install():
         if not path.exists(dst_path):
             os.symlink(src_path, dst_path)
 
-def uninstall():
+def uninstall() -> None:
     for item in os.listdir(BIN_DIR):
         full_path = path.join(BIN_DIR, item)
         if path.islink(full_path):
@@ -50,8 +51,8 @@ def uninstall():
                 os.remove(full_path)
     shutil.rmtree(LIB_DIR, ignore_errors=True)
 
-def main():
-    def setup_args(parser):
+def main() -> None:
+    def setup_args(parser: util.ArgumentParser) -> None:
         parser.add_argument('mode', choices=['on', 'off'], help='Add or remove scripts')
     args = util.parse_cmd_args(
         'Manages scripts',
