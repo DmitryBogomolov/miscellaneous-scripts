@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from os import path
+import shutil
 import util
 
 LIST_FILE_NAME = '.backup_disk_cloud'
@@ -19,12 +20,18 @@ def backup_dir(
     util.call_proc(proc_args)
     print('')
 
+def check_tool_exist(tool_name: str) -> None:
+    if shutil.which(tool_name) is None:
+        raise ValueError(f'tool "{tool_name}" is not valid')
+
+
 def backup_disk_cloud(disk: str, bucket: str, tool_name: str, dry_run: bool) -> None:
     disk_path = util.get_disk_path(disk)
     bucket_path = 's3://' + bucket
     is_dry_run = util.is_dry_run(dry_run)
 
     util.check_dir_exist(disk_path)
+    check_tool_exist(tool_name)
     target_dirs = util.read_list_file(path.join(disk_path, LIST_FILE_NAME))
 
     for dir_name in target_dirs:
