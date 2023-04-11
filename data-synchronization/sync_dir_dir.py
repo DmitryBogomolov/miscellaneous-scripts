@@ -10,6 +10,7 @@ def sync_dir_dir(src_path: str, dst_path: str, dry_run: bool) -> None:
 
     util.check_dir_exist(src_dir)
     util.check_dir_exist(dst_dir)
+    check_dirs_intersection(src_dir, dst_dir)
     proc_args = ['rsync', '--archive', '--delete', '--compress', '--progress', '-v', '-h']
     if is_dry_run:
         proc_args.append('--dry-run')
@@ -17,6 +18,10 @@ def sync_dir_dir(src_path: str, dst_path: str, dry_run: bool) -> None:
     proc_args.append(dst_dir)
 
     util.call_proc(proc_args)
+
+def check_dirs_intersection(src_dir: str, dst_dir: str) -> None:
+    if src_dir.startswith(dst_dir) or dst_dir.startswith(src_dir):
+        raise ValueError(f'directories "{src_dir}" and "{dst_dir}" intersect')
 
 def main() -> None:
     def setup_args(parser: util.ArgumentParser) -> None:
