@@ -8,7 +8,7 @@ def backup_repo(repo_path: str, is_dry_run: bool) -> None:
     ret = util.call_proc(['git', 'config', 'remote.origin.url'], capture_output=True, cwd=repo_path)
     remote_url = ret.stdout.strip()
     print(f'### "{remote_url}" --> "{repo_path}"')
-    proc_args = ['git', 'pull', '--prune', '--verbose', '--force', '--ff-only', '--stat']
+    proc_args = ['git', 'pull', '--prune', '--verbose', '--force', '--ff-only', '--stat', 'origin', 'master']
     if is_dry_run:
         proc_args.append('--dry-run')
     util.call_proc(proc_args, cwd=repo_path)
